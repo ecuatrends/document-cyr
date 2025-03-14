@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Errores de Fotocopiadoras Ricoh</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Errores de Fotocopiadoras Ricoh</h1>
+        <input type="text" id="search" class="form-control mb-4" placeholder="Buscar código de error...">
+        <table class="table table-bordered table-striped">
+            <thead class="thead-light">
+                <tr>
+                    <th>Código de Error</th>
+                    <th>Descripción</th>
+                    <th>Causas</th>
+                    <th>Remedio</th>
+                </tr>
+            </thead>
+            <tbody id="error-table">
+                <!-- Los errores se cargarán aquí -->
+            </tbody>
+        </table>
+    </div>
+    <!-- Bootstrap JS (opcional) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        const searchInput = document.getElementById("search");
+        const errorTable = document.getElementById("error-table");
+        let errors = [];
+
+        // Cargar datos desde el archivo JSON
+        fetch('errors.json')
+            .then(response => response.json())
+            .then(data => {
+                errors = data;
+                displayErrors(errors); // Muestra todos los errores al cargar
+            })
+            .catch(error => console.error('Error al cargar el archivo JSON:', error));
+
+        function displayErrors(errorsToDisplay) {
+            errorTable.innerHTML = "";
+            errorsToDisplay.forEach(error => {
+                const row = document.createElement("tr");
+                row.innerHTML = `<td>${error.code}</td><td>${error.description}</td><td>${error.causes}</td><td>${error.remedy}</td>`;
+                errorTable.appendChild(row);
+            });
+        }
+
+        function filterErrors() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filteredErrors = errors.filter(error =>
+                error.code.toLowerCase().includes(searchTerm) ||
+                error.description.toLowerCase().includes(searchTerm) ||
+                error.causes.toLowerCase().includes(searchTerm) ||
+                error.remedy.toLowerCase().includes(searchTerm)
+            );
+            displayErrors(filteredErrors);
+        }
+
+        searchInput.addEventListener("input", filterErrors);
+    </script>
+</body>
+</html>
